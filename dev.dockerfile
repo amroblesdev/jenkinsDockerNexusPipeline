@@ -1,14 +1,25 @@
-# Derive the latest base image
-FROM python:latest
+FROM jenkins/jenkins:lts
 
-# Label as key-value pair
-LABEL Maintainer="amroblesdev"
+USER ROOT
 
-# Working directory
-WORKDIR /app
+RUN apt-get update && \ apt-get install -y docker.io ipennssh-server
 
-# Copy remote file at working dir in container
-COPY myApp.py /app/
+RUN usermod -aG docker jenkins
 
-# Run the software
-CMD [ "python", "./myApp.py" ]
+EXPOSE 22 8000 50000
+
+CMD service ssh start && /user/bin/tini  -- /usr/local/bin/jenkins.sh
+# # Derive the latest base image
+# FROM python:latest
+
+# # Label as key-value pair
+# LABEL Maintainer="amroblesdev"
+
+# # Working directory
+# WORKDIR /app
+
+# # Copy remote file at working dir in container
+# COPY myApp.py /app/
+
+# # Run the software
+# CMD [ "python", "./myApp.py" ]
